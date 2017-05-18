@@ -16,36 +16,36 @@ class E_VendingMachineTest extends path.FunSpec {
       .addInventory (CHIPS, 1)
       .addInventory (CANDY, 2)
 
-    checkDisplay (subject, "INSERT COIN")
-    checkCoinReturn (subject, Nil)
+    checkDisplay ("INSERT COIN")
+    checkCoinReturn (Nil)
 
     describe ("and a nickel is inserted") {
       subject.insertCoin ("NICKEL")
 
-      checkDisplay (subject, "$0.05")
-      checkCoinReturn (subject, List ("NICKEL"))
+      checkDisplay ("$0.05")
+      checkCoinReturn (List ("NICKEL"))
 
       describe ("and a dime is inserted") {
         subject.insertCoin ("DIME")
 
-        checkDisplay (subject, "$0.15")
-        checkCoinReturn (subject, List ("NICKEL", "DIME"))
+        checkDisplay ("$0.15")
+        checkCoinReturn (List ("NICKEL", "DIME"))
 
         describe ("and a shekel is inserted") {
           subject.insertCoin ("SHEKEL")
 
-          checkDisplay (subject, "$0.15")
-          checkCoinReturn (subject, List ("NICKEL", "DIME", "SHEKEL"))
+          checkDisplay ("$0.15")
+          checkCoinReturn (List ("NICKEL", "DIME", "SHEKEL"))
 
           describe ("and two quarters are inserted") {
             subject.insertCoin ("QUARTER")
             subject.insertCoin ("QUARTER")
 
-            checkDisplay (subject, "$0.65")
-            checkCoinReturn (subject, List ("QUARTER", "QUARTER", "SHEKEL", "DIME", "NICKEL"))
+            checkDisplay ("$0.65")
+            checkCoinReturn (List ("QUARTER", "QUARTER", "SHEKEL", "DIME", "NICKEL"))
 
             describe ("and again") {
-              checkCoinReturn (subject, Nil)
+              checkCoinReturn (Nil)
             }
           }
         }
@@ -61,16 +61,16 @@ class E_VendingMachineTest extends path.FunSpec {
       describe ("and SODA ($1.00) is selected") {
         subject.select (SODA)
 
-        checkDisplay (subject, "$0.65")
-        checkBin (subject, Nil)
+        checkDisplay ("$0.65")
+        checkBin (Nil)
 
         describe ("and CHIPS ($0.50) is selected") {
           subject.select (CHIPS)
 
-          checkBin (subject, List (CHIPS))
+          checkBin (List (CHIPS))
           subject.harvestBin ()
-          checkDisplay (subject, "INSERT COIN")
-          checkCoinReturn (subject, List ("NICKEL", "DIME"))
+          checkDisplay ("INSERT COIN")
+          checkCoinReturn (List ("NICKEL", "DIME"))
 
           describe ("and $0.50 for CHIPS is inserted") {
             subject.insertCoin ("QUARTER")
@@ -79,9 +79,9 @@ class E_VendingMachineTest extends path.FunSpec {
             describe ("and CHIPS is selected") {
               subject.select (CHIPS)
 
-              checkBin (subject, Nil)
-              checkDisplay (subject, "SOLD OUT")
-              checkCoinReturn (subject, List ("QUARTER", "QUARTER"))
+              checkBin (Nil)
+              checkDisplay ("SOLD OUT")
+              checkCoinReturn (List ("QUARTER", "QUARTER"))
 
               describe ("and after the coin return") {
                 subject.returnCoins()
@@ -98,9 +98,9 @@ class E_VendingMachineTest extends path.FunSpec {
         describe ("and CANDY is selected") {
           subject.select (CANDY)
 
-          checkBin (subject, List (CANDY))
-          checkDisplay (subject, "INSERT COIN")
-          checkCoinReturn (subject, Nil)
+          checkBin (List (CANDY))
+          checkDisplay ("INSERT COIN")
+          checkCoinReturn (Nil)
         }
       }
     }
@@ -113,9 +113,9 @@ class E_VendingMachineTest extends path.FunSpec {
       describe ("and CANDY is selected") {
         subject.select (CANDY)
 
-        checkBin (subject, Nil);
-        checkDisplay (subject, "EXACT CHANGE")
-        checkCoinReturn (subject, List("QUARTER", "QUARTER", "QUARTER"))
+        checkBin (Nil)
+        checkDisplay ("EXACT CHANGE")
+        checkCoinReturn (List("QUARTER", "QUARTER", "QUARTER"))
       }
     }
 
@@ -136,45 +136,45 @@ class E_VendingMachineTest extends path.FunSpec {
         describe ("and CANDY is selected") {
           subject.select (CANDY)
 
-          checkBin (subject, List (CANDY))
-          checkDisplay (subject, "INSERT COIN")
-          checkCoinReturn (subject, List ("DIME"))
+          checkBin (List (CANDY))
+          checkDisplay ("INSERT COIN")
+          checkCoinReturn (List ("DIME"))
         }
       }
     }
-  }
 
-  private def checkBin (subject: VendingMachine, expectedBin: List[Inventory]): Unit = {
-    describe ("and the bin is harvested") {
-      val result = subject.harvestBin ()
+    def checkBin (expectedBin: List[Inventory]): Unit = {
+      describe ("and the bin is harvested") {
+        val result = subject.harvestBin ()
 
-      it (inventoryListToMsg (expectedBin)) {
-        assert (result === expectedBin)
+        it (inventoryListToMsg (expectedBin)) {
+          assert (result === expectedBin)
+        }
       }
     }
-  }
 
-  private def checkDisplay (subject: VendingMachine, expectedDisplay: String): Unit = {
-    describe ("and the display is examined") {
-      val result = subject.display
+    def checkDisplay (expectedDisplay: String): Unit = {
+      describe ("and the display is examined") {
+        val result = subject.display
 
-      it (s"says $expectedDisplay") {
-        assert (result === expectedDisplay)
+        it (s"says $expectedDisplay") {
+          assert (result === expectedDisplay)
+        }
       }
     }
-  }
 
-  private def checkCoinReturn (subject: VendingMachine, expectedCoinReturn: List[String]): Unit = {
-    describe ("and the coin return lever is pressed") {
-      subject.returnCoins ()
+    def checkCoinReturn (expectedCoinReturn: List[String]): Unit = {
+      describe ("and the coin return lever is pressed") {
+        subject.returnCoins ()
 
-      checkDisplay (subject, "INSERT COIN")
+        checkDisplay ("INSERT COIN")
 
-      describe ("and the coin return is examined") {
-        val result = subject.harvestCoinReturn ()
+        describe ("and the coin return is examined") {
+          val result = subject.harvestCoinReturn ()
 
-        it (s"shows ${coinListToMsg (expectedCoinReturn)}") {
-          assertBagsEqual (result, expectedCoinReturn)
+          it (s"shows ${coinListToMsg (expectedCoinReturn)}") {
+            assertBagsEqual (result, expectedCoinReturn)
+          }
         }
       }
     }
