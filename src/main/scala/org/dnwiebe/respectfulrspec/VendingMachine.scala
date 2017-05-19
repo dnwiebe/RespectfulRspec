@@ -49,18 +49,8 @@ class VendingMachine extends VendingMachineDescription {
 
     val availableChange = addSome (coinBox, pending)
     val change = makeChange (availableChange, pendingValue - item.price) match {
-      case Some (coins) => {
-        returnedCoins = coins.map (_.name)
-        inventory = removeSome (inventory, List (item))
-        binContents = item :: binContents
-        priorityMessage = None
-        coins
-      }
-      case None => {
-        returnedCoins = pending.map (_.name)
-        priorityMessage = Some ("EXACT CHANGE")
-        Nil
-      }
+      case Some (coins) => handleAvailableChange (coins, item)
+      case None => handleNoAvailableChange ()
     }
 
     coinBox = addSome (coinBox, pending)
@@ -120,5 +110,19 @@ class VendingMachine extends VendingMachineDescription {
         }
       }
     }
+  }
+
+  private def handleAvailableChange (coins: List[Coin], item: Inventory): List[Coin] = {
+    returnedCoins = coins.map (_.name)
+    inventory = removeSome (inventory, List (item))
+    binContents = item :: binContents
+    priorityMessage = None
+    coins
+  }
+
+  private def handleNoAvailableChange (): List[Coin] = {
+    returnedCoins = pending.map (_.name)
+    priorityMessage = Some ("EXACT CHANGE")
+    Nil
   }
 }
