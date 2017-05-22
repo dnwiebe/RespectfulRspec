@@ -1,14 +1,13 @@
-package org.dnwiebe.respectfulrspec.rspec
+package org.dnwiebe.respectfulrspec
 
 import org.dnwiebe.respectfulrspec.Inventory.{CANDY, CHIPS, SODA}
-import org.dnwiebe.respectfulrspec.{Inventory, VendingMachine}
-import org.scalatest.path
 import org.dnwiebe.respectfulrspec.utils.TestUtils._
+import org.scalatest.path
 
 /**
   * Created by dnwiebe on 4/23/17.
   */
-class E_VendingMachineTest extends path.FunSpec {
+class VendingMachineTest extends path.FunSpec {
 
   describe ("When a VendingMachine is created and given some inventory") {
     val subject = new VendingMachine ()
@@ -157,7 +156,7 @@ class E_VendingMachineTest extends path.FunSpec {
       describe ("and the display is examined") {
         val result = subject.display
 
-        it (s"says $expectedDisplay") {
+        it (s"it says $expectedDisplay") {
           assert (result === expectedDisplay)
         }
       }
@@ -167,15 +166,15 @@ class E_VendingMachineTest extends path.FunSpec {
       describe ("and the coin return lever is pressed") {
         subject.returnCoins ()
 
-        checkDisplay ("INSERT COIN")
-
         describe ("and the coin return is examined") {
           val result = subject.harvestCoinReturn ()
 
-          it (s"shows ${coinListToMsg (expectedCoinReturn)}") {
+          it (s"it shows ${coinListToMsg (expectedCoinReturn)}") {
             assertBagsEqual (result, expectedCoinReturn)
           }
         }
+
+        checkDisplay ("INSERT COIN")
       }
     }
   }
